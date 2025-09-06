@@ -1,5 +1,16 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Uputstvo
+
+da se lokalno pokrene:
+
+```bash
+docker build -t next-supabase-demo:1.0.2 .
+docker run --rm -p 3000:3000 --env-file .env next-supabase-demo:1.0.2
+```
+
+
+
 ## Getting Started
 
 First, run the development server:
