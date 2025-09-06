@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: next-supabase-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: next-supabase-demo
+  template:
+    metadata:
+      labels:
+        app: next-supabase-demo
+    spec:
+      containers:
+      - name: web
+        image: next-supabase-demo:1.0.2   # isti tag kao u docker build
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: NODE_OPTIONS
+          value: "--dns-result-order=ipv4first"
+        - name: SUPABASE_A_URL
+          valueFrom: { secretKeyRef: { name: supabase-secrets, key: SUPABASE_A_URL } }
+        - name: SUPABASE_A_API_KEY
+          valueFrom: { secretKeyRef: { name: supabase-secrets, key: SUPABASE_A_API_KEY } }
+        - name: SUPABASE_B_URL
+          valueFrom: { secretKeyRef: { name: supabase-secrets, key: SUPABASE_B_URL } }
+        - name: SUPABASE_B_API_KEY
+          valueFrom: { secretKeyRef: { name: supabase-secrets, key: SUPABASE_B_API_KEY } }
+        readinessProbe:
+          httpGet: { path: /api/health, port: 3000 }
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet: { path: /api/health, port: 3000 }
+          initialDelaySeconds: 10
+          periodSeconds: 20
